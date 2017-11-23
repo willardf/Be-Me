@@ -1,0 +1,14 @@
+*.csproj
+
+Library/
+Temp/
+Bin/
+.vs/
+obj/
+
+*.exe
+*.pdb
+*_Data/
+Heapshots/
+
+WebBuild/
