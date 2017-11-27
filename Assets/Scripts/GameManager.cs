@@ -1,10 +1,10 @@
 ﻿using io.newgrounds.components.Medal;
 using io.newgrounds.objects;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GameManager : DestroyableSingleton<GameManager>
 {
@@ -14,8 +14,8 @@ public class GameManager : DestroyableSingleton<GameManager>
         GameStarted,
         OutsideGamestop,
         InsideGamestop,
-        AmDog,
         Chase,
+        AtSchool,
     }
 
     private enum DogState
@@ -56,6 +56,7 @@ public class GameManager : DestroyableSingleton<GameManager>
         { "haggle", "talk" },
         { "impress", "talk" },
         { "seduce", "talk" },
+        { "say hi", "talk" },
         { "look around", "look" },
         { "find", "look for" },
         { "cute girl", "girl" },
@@ -65,6 +66,7 @@ public class GameManager : DestroyableSingleton<GameManager>
 
     public TextController MainScreen;
     public SpriteRenderer Shrug;
+    public TextBox InputBox;
 
     [HideInInspector] private LocationStates locationState;
     [HideInInspector] private DogState dogState;
@@ -90,19 +92,25 @@ public class GameManager : DestroyableSingleton<GameManager>
                 .ToDictionary(m => m.id, m => m.unlocked));
     }
 
-    private void ResetGame()
+    public void ResetGame()
     {
         this.locationState = LocationStates.NotStarted;
         this.dogState = DogState.Ignored;
         this.capeState = CapeState.Down;
         this.talkingToGirl = false;
         this.fallingInLove = 0;
+        SchoolLocation.Instance.Reset();
     }
 
     public void AcceptInput(string input)
     {
-        input = SimplifyInput(input);
-        output.Clear();
+        if (this.output.Count > 0)
+        {
+            AppendOneLine();
+            return;
+        }
+
+        input = SimplifyInput(this.Synonyms, input);
         Shrug.gameObject.SetActive(false);
 
         switch (this.locationState)
@@ -114,7 +122,7 @@ public class GameManager : DestroyableSingleton<GameManager>
                     // MainScreen.BackgroundColor = new Color(245, 233, 225);
                     // MainScreen.Color = new Color(120 / 255f, 153 / 255f, 34 / 255f);
                     MainScreen.displayTxt = "";
-                    output.Add("be me, 18");
+                    output.Add("be me, 17");
                     output.Add("should go to school, but could go to gamestop instead");
                 }
                 else if (input.Equals("look"))
@@ -132,11 +140,11 @@ public class GameManager : DestroyableSingleton<GameManager>
             case LocationStates.InsideGamestop:
                 HandleInsideGamestop(input);
                 break;
-            case LocationStates.AmDog:
-                HandleAmDog(input);
-                break;
             case LocationStates.Chase:
                 HandleChase(input);
+                break;
+            case LocationStates.AtSchool:
+                SchoolLocation.Instance.HandleInput(output, input);
                 break;
         }
 
@@ -148,23 +156,15 @@ public class GameManager : DestroyableSingleton<GameManager>
         }
         else if (output.Count != 0)
         {
-            StringBuilder builder = new StringBuilder(MainScreen.displayTxt);
-            builder.Replace("[000000]", "");
-            builder.Append("[000000]");
-            foreach (string s in output)
-            {
-                builder.Append(">" + s + "\n");
-            }
-
-            MainScreen.displayTxt = builder.ToString();
+            AppendOneLine();
         }
         else
         {
             Shrug.gameObject.SetActive(true);
             Shrug.color = new Color(
-                UnityEngine.Random.value * .75f,
-                UnityEngine.Random.value * .75f,
-                UnityEngine.Random.value * .75f);
+                Random.value * .75f,
+                Random.value * .75f,
+                Random.value * .75f);
         }
     }
 
@@ -206,19 +206,6 @@ public class GameManager : DestroyableSingleton<GameManager>
         }
     }
 
-    private void HandleAmDog(string input)
-    {
-        output.Add("mount gamestop dog");
-        output.Add("'how do you like it?', I howl");
-        output.Add("oh shit animal control");
-        output.Add("run away to join wolves");
-        output.Add("grrr gamestop");
-        output.Add("");
-        UnlockMedal(output, "be dog", MedalTypes.BeDog);
-        output.Add("(be me to play again)");
-        this.ResetGame();
-    }
-
     private void HandleInsideGamestop(string input)
     {
         if (!talkingToGirl)
@@ -233,7 +220,7 @@ public class GameManager : DestroyableSingleton<GameManager>
                 || input.Equals("ask for help")
                 || input.Equals("look"))
             {
-                output.Add("about 6 people in store, only employee is cute girl behind counter");
+                output.Add("only employee is cute girl behind counter");
             }
 
             if (input.Equals("talk people"))
@@ -277,7 +264,7 @@ public class GameManager : DestroyableSingleton<GameManager>
                 {
                     case 0:
                         output.Add("'Well you know, shadow isn't actually related to sonic. He's just genetically altered'");
-                        output.Add("she looks unimpressed");
+                        output.Add("notimpressed.tiff");
                         output.Add("she must know that already");
                         output.Add("i hear dripping");
                         this.fallingInLove = 1;
@@ -344,6 +331,11 @@ public class GameManager : DestroyableSingleton<GameManager>
                 output.Add("my cape is still slowly floating down");
             }
         }
+
+        if (output.Count == 0 && input.Equals("talk"))
+        {
+            output.Add("talk to whom?");
+        }
     }
 
     private void HandleOutsideGamestop(string input)
@@ -400,7 +392,15 @@ public class GameManager : DestroyableSingleton<GameManager>
                     break;
                 case DogState.Humping:
                     output.Add("look down to continue petting, realize am dog");
-                    this.locationState = LocationStates.AmDog;
+                    output.Add("mount gamestop dog");
+                    output.Add("'how do you like it?', I howl");
+                    output.Add("oh shit animal control");
+                    output.Add("run away to join wolves");
+                    output.Add("grrr gamestop");
+                    output.Add("");
+                    UnlockMedal(output, "be dog", MedalTypes.BeDog);
+                    output.Add("(be me to play again)");
+                    this.ResetGame();
                     break;
             }
         }
@@ -438,6 +438,7 @@ public class GameManager : DestroyableSingleton<GameManager>
         }
 
         if (input.Equals("inside")
+            || input.Equals("goto gamestop")
             || input.Equals("go inside")
             || input.Equals("open door")
             || input.Equals("ignore dog"))
@@ -470,15 +471,18 @@ public class GameManager : DestroyableSingleton<GameManager>
         else if (input.Contains("school"))
         {
             // playing fav ntr eroge when, suddenly very hungry
-            output.Add("haven't added this scene yet");
+            this.locationState = LocationStates.AtSchool;
+            output.Add("at school, sitting next to cute girl");
+            output.Add("I hatch a plan to steal her pencil for a chance at interaction");
+            output.Add("but beta af, so probably just eat cheetos");
         }
-        else if (input.Equals("hint"))
+        else
         {
-            output.Add("goto gamestop or goto school, tough choice");
+            output.Add("gamestop or school, tough choice");
         }
     }
 
-    public string SimplifyInput(string input)
+    public static string SimplifyInput(Dictionary<string, string> synonyms, string input)
     {
         input = input.Replace(" a ", "").Replace(" the ", "");
 
@@ -486,7 +490,7 @@ public class GameManager : DestroyableSingleton<GameManager>
         do
         {
             input = output;
-            foreach (var kvp in this.Synonyms)
+            foreach (var kvp in synonyms)
             {
                 output = output.Replace(kvp.Key, kvp.Value);
             }
@@ -496,7 +500,7 @@ public class GameManager : DestroyableSingleton<GameManager>
         return output;
     }
 
-    private void UnlockMedal(List<string> output, string name, MedalTypes medalId)
+    public void UnlockMedal(List<string> output, string name, MedalTypes medalId)
     {
         bool unlocked;
         if (this.medalList == null)
@@ -522,5 +526,28 @@ public class GameManager : DestroyableSingleton<GameManager>
         }
 
         output.Add("Medals: " + this.medalList.Count(k => k.Value) + "/" + this.medalList.Count);
+    }
+    
+    private void AppendOneLine()
+    {
+        StringBuilder builder = new StringBuilder(MainScreen.displayTxt);
+        builder.Replace("[000000]", "").Replace("(more)\n", "");
+        builder.Append("[000000]");
+        string newLine = output[0];
+        output.RemoveAt(0);
+        builder.Append(">" + newLine + "\n");
+
+        if (newLine.Length == 0)
+        {
+            for (int i = 0; i < 2 && output.Count > 0; ++i)
+            {
+                newLine = output[0];
+                output.RemoveAt(0);
+                builder.Append(">" + newLine + "\n");
+            }
+        }
+
+        MainScreen.displayTxt = builder.ToString();
+        this.InputBox.AnyKey = output.Count > 0;
     }
 }

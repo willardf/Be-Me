@@ -10,5 +10,9 @@ public enum MedalTypes
     BeSuave = 53543,
     BePhilanthropic = 53544,
     BeDog = 53545,
-    BeDreaming = 53546
+    BeDreaming = 53546,
+
+    BeRudolph = 53547,
+    BeTreats = 53548,
+    BeNotPoop = 53549
 }

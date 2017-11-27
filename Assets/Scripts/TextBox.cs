@@ -6,13 +6,12 @@ using UnityEngine;
 
 public class TextBox : MonoBehaviour
 {
-    private Controller myController = new Controller();
-
     public StringBuilder text = new StringBuilder(32);
     public TextController controller;
-    public Collider2D myCollider;
 
-    public bool HasFocus;
+    public bool AnyKey;
+
+    private string lastFrame = null;
 
     public void Start()
     {
@@ -21,55 +20,62 @@ public class TextBox : MonoBehaviour
 
     public void Update()
     {
-        myController.Update();
-        if (HasFocus)
+        if (this.AnyKey)
         {
-            string input = Input.inputString;
-            if (input.Length > 0)
+            this.controller.displayTxt = "(any key)";
+
+            if (Input.inputString.Length > 0)
             {
-                if (text.Length == 0)
-                {
-                    text.Append('>');
-                }
-
-                for (int i = 0; i < input.Length; ++i)
-                {
-                    char c = input[i];
-                    switch (c)
-                    {
-                        case '\b':
-                            if (text.Length > 1)
-                            {
-                                text.Length--;
-                            }
-                            break;
-                        case '\r':
-                        case '\n':
-                            GameManager.Instance.AcceptInput(text.ToString().Substring(1).Trim().ToLowerInvariant());
-                            text.Length = 1;
-                            break;
-                        default:
-                            if (text.Length < 32
-                                && (c == ' '
-                                    || c == '.'
-                                    || (c >= 'A' && c <= 'Z') 
-                                    || (c >= 'a' && c <= 'z')))
-                            {
-                                text.Append(c);
-                            }
-                            break;
-                    }
-                }
-
-                this.controller.displayTxt = this.text.ToString();
+                GameManager.Instance.AcceptInput(Input.inputString.ToLowerInvariant());
             }
+
+            return;
         }
-        else if (myController.TouchUp)
+        else if (this.controller.displayTxt.Equals("(any key)"))
         {
-            if (this.myCollider.OverlapPoint(Controller.Position))
-            {
-                this.HasFocus = true;
-            }
+            this.controller.displayTxt = ">";
         }
+
+        string input = Input.inputString;
+        if (input.Length > 0 || !input.Equals(this.lastFrame))
+        {
+            if (text.Length == 0)
+            {
+                text.Append('>');
+            }
+
+            for (int i = 0; i < input.Length; ++i)
+            {
+                char c = input[i];
+                switch (c)
+                {
+                    case '\b':
+                        if (text.Length > 1)
+                        {
+                            text.Length--;
+                        }
+                        break;
+                    case '\r':
+                    case '\n':
+                        GameManager.Instance.AcceptInput(text.ToString().Substring(1).Trim().ToLowerInvariant());
+                        text.Length = 1;
+                        break;
+                    default:
+                        if (text.Length < 32
+                            && (c == ' '
+                                || c == '.'
+                                || (c >= 'A' && c <= 'Z')
+                                || (c >= 'a' && c <= 'z')))
+                        {
+                            text.Append(c);
+                        }
+                        break;
+                }
+            }
+
+            this.controller.displayTxt = this.text.ToString();
+        }
+
+        this.lastFrame = input;
     }
 }
