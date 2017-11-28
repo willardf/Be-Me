@@ -14,5 +14,7 @@ public enum MedalTypes
 
     BeRudolph = 53547,
     BeTreats = 53548,
-    BeNotPoop = 53549
+    BeNotPoop = 53549,
+    BeAtomized = 53550,
+    BeInspected = 53551
 }

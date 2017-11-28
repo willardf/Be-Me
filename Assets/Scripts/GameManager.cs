@@ -8,6 +8,8 @@ using Random = UnityEngine.Random;
 
 public class GameManager : DestroyableSingleton<GameManager>
 {
+    public const string DumpLines = "<dump>";
+
     private enum LocationStates
     {
         NotStarted,
@@ -125,6 +127,10 @@ public class GameManager : DestroyableSingleton<GameManager>
                     output.Add("be me, 17");
                     output.Add("should go to school, but could go to gamestop instead");
                 }
+                else if (input.Equals("cheevos"))
+                {
+                    
+                }
                 else if (input.Equals("look"))
                 {
                     output.Add("start the game, numbnuts");
@@ -198,8 +204,8 @@ public class GameManager : DestroyableSingleton<GameManager>
                 output.Add("I rocket, spinning into the air");
                 output.Add("I reach a cumulonimbus and form a tornado");
                 output.Add("spaghetti is thrown to far reaches of world, curing hunger for all");
+                output.Add(GameManager.DumpLines);
                 UnlockMedal(output, "be philanthropic", MedalTypes.BePhilanthropic);
-                output.Add("");
                 output.Add("(be me to play again)");
                 this.ResetGame();
             }
@@ -245,7 +251,7 @@ public class GameManager : DestroyableSingleton<GameManager>
                 output.Add("unzip my fannypack and pull out spaghetti");
                 output.Add("a tsunami rushes forth from behind the counter");
                 output.Add("it blasts me out of gamestop and carries on to destroy half the town");
-                output.Add("");
+                output.Add(GameManager.DumpLines);
                 UnlockMedal(output, "be suave", MedalTypes.BeSuave);
                 output.Add("(be me to play again)");
                 this.ResetGame();
@@ -291,7 +297,7 @@ public class GameManager : DestroyableSingleton<GameManager>
                         output.Add("complete transaction");
                         output.Add("leave and enjoy new game");
                         output.Add("fucking gamestop");
-                        output.Add("");
+                        output.Add(GameManager.DumpLines);
                         UnlockMedal(output, "be prepared", MedalTypes.BePrepared);
                         output.Add("(be me to play again)");
                         this.ResetGame();
@@ -302,7 +308,7 @@ public class GameManager : DestroyableSingleton<GameManager>
                         output.Add("land in spaghetti, split head open");
                         output.Add("my blood looks like marinara, my brain matter meatballs");
                         output.Add("gamestop zombies feast for days");
-                        output.Add("");
+                        output.Add(GameManager.DumpLines);
                         UnlockMedal(output, "be spaghetti", MedalTypes.BeSpaghetti);
                         output.Add("(be me to play again)");
                         this.ResetGame();
@@ -355,7 +361,7 @@ public class GameManager : DestroyableSingleton<GameManager>
             output.Add("open my eyes, at dinner with fam");
             output.Add("i vomit over the table");
             output.Add("grounded for a week");
-            output.Add("");
+            output.Add(GameManager.DumpLines);
             output.Add("(be me to play again)");
             UnlockMedal(output, "be dreaming", MedalTypes.BeDreaming);
             this.ResetGame();
@@ -397,7 +403,7 @@ public class GameManager : DestroyableSingleton<GameManager>
                     output.Add("oh shit animal control");
                     output.Add("run away to join wolves");
                     output.Add("grrr gamestop");
-                    output.Add("");
+                    output.Add(GameManager.DumpLines);
                     UnlockMedal(output, "be dog", MedalTypes.BeDog);
                     output.Add("(be me to play again)");
                     this.ResetGame();
@@ -535,16 +541,19 @@ public class GameManager : DestroyableSingleton<GameManager>
         builder.Append("[000000]");
         string newLine = output[0];
         output.RemoveAt(0);
-        builder.Append(">" + newLine + "\n");
-
-        if (newLine.Length == 0)
+        
+        if (newLine.Equals(DumpLines))
         {
-            for (int i = 0; i < 2 && output.Count > 0; ++i)
+            while (output.Count > 0)
             {
                 newLine = output[0];
                 output.RemoveAt(0);
                 builder.Append(">" + newLine + "\n");
             }
+        }
+        else
+        {
+            builder.Append(">" + newLine + "\n");
         }
 
         MainScreen.displayTxt = builder.ToString();

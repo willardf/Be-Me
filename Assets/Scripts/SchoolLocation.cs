@@ -23,7 +23,8 @@ public class SchoolLocation : DestroyableSingleton<SchoolLocation>
     {
         Start,
         Pencil,
-        Cheetos
+        Cheetos,
+        Talking
     }
 
     public enum PencilState
@@ -31,7 +32,6 @@ public class SchoolLocation : DestroyableSingleton<SchoolLocation>
         NotStolen,
         Stolen,
         Shitty,
-        Shitty2,
         Diamonds,
     }
 
@@ -61,16 +61,56 @@ public class SchoolLocation : DestroyableSingleton<SchoolLocation>
             case Locations.Cheetos:
                 HandleCheetos(output, input);
                 break;
+            case Locations.Talking:
+                HandleTalking(output, input);
+                break;
         }
+    }
+
+    private void HandleTalking(List<string> output, string input)
+    {
+        
     }
 
     private void HandleCheetos(List<string> output, string input)
     {
-        if (input.Equals("fuck chips"))
+        if (input.Contains("look"))
         {
             if (this.pencilState == PencilState.Diamonds)
             {
-                output.Add("like I really fucking love cheetos");
+                output.Add("Man, this cheetos look so good I could fuck them");
+            }
+            else
+            {
+                output.Add("Bag still half full of cheetos");
+            }
+        }
+        else if (input.Equals("eat chips"))
+        {
+            output.Add("Crunch, crunch");
+            output.Add("Cute girl looks over, \"That's annoying, could you stop?\"");
+            if (this.pencilState == PencilState.Diamonds)
+            {
+                output.Add("Instantly cum from girl talking to me for a second time today");
+                output.Add("Suddenly nurse busts in and bangs the ceremonial penis inspection day gong");
+                output.Add("I try to hide my cheetos, but the crinkling makes me a target");
+                output.Add("I try to run, but the nurse grabs me and suplexes me");
+                output.Add("Cheetos shit gushes from my anus and fills my pants upon impact");
+                output.Add("She unzips my pants to find cheeto cum shit balls");
+                output.Add("I then vomit flaming hot cheetos which ignite upon touching the air");
+                output.Add("but I rolled a critical miss, so the flames back up and I explode");
+                output.Add("fucking penis inpection day");
+                output.Add(GameManager.DumpLines);
+                GameManager.Instance.UnlockMedal(output, "be inspected", MedalTypes.BeInspected);
+                output.Add("(be me to play again)");
+                GameManager.Instance.ResetGame();
+                return;
+            }
+        }
+        else if (input.Equals("fuck chips"))
+        {
+            if (this.pencilState == PencilState.Diamonds)
+            {
                 output.Add("I whip my dick out and pulverize the bright red chips into powder");
                 output.Add("but the spices begin to burn my cock");
                 output.Add("it grows painfully red and irritated");
@@ -80,7 +120,7 @@ public class SchoolLocation : DestroyableSingleton<SchoolLocation>
                 output.Add("i stand, with my bright red erection and salute him");
                 output.Add("he rams a pole up my ass and mounts me on his sleigh, guiding him on his deliveries");
                 output.Add("you're welcome");
-                output.Add("");
+                output.Add(GameManager.DumpLines);
                 GameManager.Instance.UnlockMedal(output, "be rudolph", MedalTypes.BeRudolph);
                 output.Add("(be me to play again)");
                 GameManager.Instance.ResetGame();
@@ -91,15 +131,14 @@ public class SchoolLocation : DestroyableSingleton<SchoolLocation>
                 output.Add("would fuck cheetos, I love them so much, but not hard right now");
             }
         }
-
-        if (input.Contains("give chips"))
+        else if (input.Contains("give chips"))
         {
             output.Add("I offer a cheeto to the cute girl");
             output.Add("she smacks it out of my hand in disgust");
             output.Add("the combined anguish of rejection and losing a cheeto causes me to burst into treats");
             output.Add("The girl picks up a piece and says");
             output.Add("\"now das what'm talkin' about, sugah!\"");
-            output.Add("");
+            output.Add(GameManager.DumpLines);
             GameManager.Instance.UnlockMedal(output, "be treats", MedalTypes.BeTreats);
             output.Add("(be me to play again)");
             GameManager.Instance.ResetGame();
@@ -115,21 +154,38 @@ public class SchoolLocation : DestroyableSingleton<SchoolLocation>
                 {
                     output.Add("she looks like she wants a pencil");
                 }
-
-                if (input.Contains("pencil"))
+                else if (
+                    input.Equals("get pencil")
+                    || input.Equals("give pencil"))
                 {
                     output.Add("Pull out her pencil, it's covered in pocket chocolate");
-                    output.Add("I stammer, \"I-it's not poop\"");
+                    output.Add("She sees it. Mortified, I stammer, \"I-it's not poop\"");
+                    output.Add("Think: fuck, I gotta get this chocolate off somehow");
                     this.pencilState = PencilState.Shitty;
+                }
+                else if (input.Contains("talk"))
+                {
+                    output.Add("Hands clam up");
+                    output.Add("O-oh, yeah. J-j-just a sec.");
+                    output.Add("Shove hand in pocket");
+                    output.Add("Nothing");
+                    output.Add("Wtfwtf, growing more frantic as I check each pocket once, then twice");
+                    output.Add("Shove hands in pockets so hard and deep Mrs. TeacherLady collapses in orgasm");
+                    output.Add("Tear open backpack with such force, blackhole opens");
+                    output.Add("Time stretches to infinity as as I'm pulled into my own undoing");
+                    output.Add("My last sight before my eyes are atomized is a pencil under my desk");
+                    output.Add(GameManager.DumpLines);
+                    GameManager.Instance.UnlockMedal(output, "be atomized", MedalTypes.BeAtomized);
+                    output.Add("inb4 that's not how blackholes are formed");
+                    output.Add("(be me to play again)");
+                    GameManager.Instance.ResetGame();
                 }
                 break;
             case PencilState.Shitty:
-                if (input.Contains("wipe"))
+                if (input.Contains("look"))
                 {
-                    output.Add("wipe the pencil. now I'm covered in chocolate too.");
-                    output.Add("shes screaming now, everyone's looking");
-                    output.Add("\"It's not poop!\", I yell");
-                    this.pencilState = PencilState.Shitty2;
+                    output.Add("be panicked, holding a pencil covered in chocolate.");
+                    output.Add("Fuck, I gotta wipe this up or like eat it or something.");
                 }
                 else if (input.Contains("eat"))
                 {
@@ -142,18 +198,22 @@ public class SchoolLocation : DestroyableSingleton<SchoolLocation>
                     this.pencilState = PencilState.Diamonds;
                     this.locationState = Locations.Start;
                 }
-                break;
-            case PencilState.Shitty2:
-                output.Add("spaghetti erupts from my pockets, covered in chocolate");
-                output.Add("students start hopping on their desks");
-                output.Add("hooting and screeching, flinging pocket chocolate at each other");
-                output.Add("kids start supplementing chocolate with real shit");
-                output.Add("the teacher sits calmly chewing a banana as shitty chocolate spaghetti flies past");
-                // TODO: output.Add("");
-                output.Add("");
-                GameManager.Instance.UnlockMedal(output, "be not poop", MedalTypes.BeNotPoop);
-                output.Add("(be me to play again)");
-                GameManager.Instance.ResetGame();
+                else if (input.Contains("wipe"))
+                {
+                    output.Add("wipe the pencil. now I'm covered in chocolate too.");
+                    output.Add("shes screaming now, everyone's looking");
+                    output.Add("\"It's not poop!\", I yell");
+                    output.Add("spaghetti erupts from my pockets, covered in chocolate");
+                    output.Add("students start hopping on their desks");
+                    output.Add("hooting and screeching, flinging pocket chocolate at each other");
+                    output.Add("kids start supplementing chocolate with real shit");
+                    output.Add("the teacher sits calmly chewing a banana as shitty chocolate spaghetti flies past");
+                    output.Add("My vision fades as I succumb to \"It's not poop\"");
+                    output.Add(GameManager.DumpLines);
+                    GameManager.Instance.UnlockMedal(output, "be not poop", MedalTypes.BeNotPoop);
+                    output.Add("(be me to play again)");
+                    GameManager.Instance.ResetGame();
+                }
                 break;
         }
     }
@@ -165,12 +225,11 @@ public class SchoolLocation : DestroyableSingleton<SchoolLocation>
             output.Add("sitting in class, next to cute girl");
             if (this.pencilState == PencilState.NotStolen)
             {
-                output.Add("I can a pencil in her desk, and I have cheetos in my own.");
-                output.Add("steal pencil, eat cheetos");
+                output.Add("I can see a pencil in her desk, and I have cheetos in my own.");
             }
             else
             {
-                output.Add("I have cheetos in my desk.");
+                output.Add("I have cheetos in my desk and a hard-on in my pants.");
             }
         }
 
@@ -195,6 +254,16 @@ public class SchoolLocation : DestroyableSingleton<SchoolLocation>
             output.Add("I love this shit");
             this.locationState = Locations.Cheetos;
         }
-
+        else if (input.Equals("talk girl"))
+        {
+            output.Add("I stammer out something insightful towards the girl");
+            output.Add("\"Vriska isn't really fat, Andrew Hussie is just a troll.\"");
+            output.Add("She turns towards me, \"Are you talking to me?\"");
+            this.locationState = Locations.Talking;
+        }
+        else if (input.Equals("fuck girl"))
+        {
+            output.Add("She's a 2/10, so obv would fuck, but I should talk to her or something first.");
+        }
     }
 }
