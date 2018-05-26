@@ -18,6 +18,8 @@ public class TextBox : MonoBehaviour
         text.Append(">");
     }
 
+    private bool bDown;
+
     public void Update()
     {
         if (this.AnyKey)
@@ -50,10 +52,16 @@ public class TextBox : MonoBehaviour
                 switch (c)
                 {
                     case '\b':
-                        if (text.Length > 1)
+                        if (bDown)
                         {
-                            text.Length--;
+                            bDown = false;
+                            if (text.Length > 1)
+                            {
+                                text.Length--;
+                            }
                         }
+                        else { bDown = true; }
+
                         break;
                     case '\r':
                     case '\n':

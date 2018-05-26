@@ -114,6 +114,8 @@ public class GameManager : DestroyableSingleton<GameManager>
 
         input = SimplifyInput(this.Synonyms, input);
         Shrug.gameObject.SetActive(false);
+        
+        if (input.Length == 0) return;
 
         switch (this.locationState)
         {
@@ -269,7 +271,7 @@ public class GameManager : DestroyableSingleton<GameManager>
                 switch (this.fallingInLove)
                 {
                     case 0:
-                        output.Add("'Well you know, shadow isn't actually related to sonic. He's just genetically altered'");
+                        output.Add("\"Well you know, shadow isn't actually related to sonic. He's just genetically altered\"");
                         output.Add("notimpressed.tiff");
                         output.Add("she must know that already");
                         output.Add("i hear dripping");
@@ -330,7 +332,7 @@ public class GameManager : DestroyableSingleton<GameManager>
             if (this.capeState == CapeState.Down)
             {
                 output.Add("I lift my cape");
-                this.capeState = CapeState.Down;
+                this.capeState = CapeState.Up;
             }
             else
             {
@@ -399,7 +401,7 @@ public class GameManager : DestroyableSingleton<GameManager>
                 case DogState.Humping:
                     output.Add("look down to continue petting, realize am dog");
                     output.Add("mount gamestop dog");
-                    output.Add("'how do you like it?', I howl");
+                    output.Add("\"how do you like it?\", I howl");
                     output.Add("oh shit animal control");
                     output.Add("run away to join wolves");
                     output.Add("grrr gamestop");
@@ -460,7 +462,7 @@ public class GameManager : DestroyableSingleton<GameManager>
             }
         }
 
-        if (input.Contains("game") || input.Equals("hint"))
+        if (input.Contains("game") || input.Equals("look"))
         {
             output.Add("could go inside for game, but this dog looks like it needs pets");
         }
@@ -471,7 +473,7 @@ public class GameManager : DestroyableSingleton<GameManager>
         if (input.Contains("game"))
         {
             output.Add("went to gamestop to buy a copy of dotawatch");
-            output.Add("be outside, cute dog with 'do not pet' sign");
+            output.Add("be outside, cute dog with \"do not pet\" sign");
             this.locationState = LocationStates.OutsideGamestop;
         }
         else if (input.Contains("school"))
@@ -521,7 +523,8 @@ public class GameManager : DestroyableSingleton<GameManager>
         }
         else if (!unlocked)
         {
-            output.Add("Unlocked the " + name + " medal");
+            output.Add("Unlocked the \"" + name + "\" medal");
+            this.medalList[(int)medalId] = true;
             unlock medal_unlock = new unlock();
             medal_unlock.id = (int)medalId;
             medal_unlock.callWith(NgCore);

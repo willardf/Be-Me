@@ -13,8 +13,10 @@ public class SchoolLocation : DestroyableSingleton<SchoolLocation>
         { "taste", "eat" },
         { "steal", "get" },
         { "cheetos", "chips" },
+        { "cheetoes", "chips" },
         { "have sex with", "fuck" },
         { "bone", "fuck" },
+        { "sex", "fuck" },
         { "bang", "fuck" },
         { "offer", "give" }
     };
@@ -35,15 +37,23 @@ public class SchoolLocation : DestroyableSingleton<SchoolLocation>
         Diamonds,
     }
 
+    public enum GirlState
+    {
+        PostStarted,
+        PostChocolate
+    }
+
     public GameManager GameManager;
 
     public Locations locationState = Locations.Start;
     public PencilState pencilState = PencilState.NotStolen;
+    public GirlState girlState = GirlState.PostStarted;
 
     public void Reset()
     {
         this.locationState = Locations.Start;
         this.pencilState = PencilState.NotStolen;
+        this.girlState = GirlState.PostStarted;
     }
 
     public void HandleInput(List<string> output, string input)
@@ -69,7 +79,74 @@ public class SchoolLocation : DestroyableSingleton<SchoolLocation>
 
     private void HandleTalking(List<string> output, string input)
     {
-        
+        if (girlState == GirlState.PostStarted)
+        {
+            if (input.Contains("give") && input.Contains("chocolate"))
+            {
+                output.Add("I get on one knee and whip out my pocket chocolate");
+                output.Add("ignite_my_pocket_rocket_for_some_pocket_chocolate.wav");
+                output.Add("She's delighted by my wit so we hide under the bleachers between classes");
+                output.Add("She asks, do you want a blowjob or sex?");
+                girlState = GirlState.PostChocolate;
+            }
+            else if (input.Contains("give") && input.Contains("chips"))
+            {
+                output.Add("I can't give a swell dame this like chips!");
+                output.Add("She needs some finery, like chocolate or something");
+            }
+            else if (input.Contains("look"))
+            {
+                output.Add("I look around for something to give her");
+                output.Add("I always keep a stash of pocket chocolate");
+            }
+            else
+            {
+                output.Add("Instantly mortified, we just interacted!");
+                output.Add("Gotta do something to really wow her");
+            }
+        }
+        else
+        {
+            if (input.Contains("blowjob"))
+            {
+                output.Add("She smiles and pulls down my sweats");
+                output.Add("The band starts practicing in the gym");
+                output.Add("feelsgood.man");
+                output.Add("I start to lose myself in the music and the moment");
+                output.Add("I whisper sexy shit in her ear");
+                output.Add("\"Yeah, you own that dick, you better never let it go\"");
+                output.Add("imgonnacum.png");
+                output.Add("I only get one shot, can't miss this chance");
+                output.Add("I blow mom's spaghetti all over her sweater");
+                output.Add("You can do anything you set your mind to, man");
+                output.Add(GameManager.DumpLines);
+                GameManager.Instance.UnlockMedal(output, "be eminem", MedalTypes.BeEminem);
+                output.Add("(be me to play again)");
+                GameManager.Instance.ResetGame();
+            }
+            else if (input.Contains("fuck"))
+            {
+                output.Add("She pulls her pants down and waves her ass at me");
+                output.Add("So nervous, I can't get it up");
+                output.Add("Attempt the windmill to get blood flowing");
+                output.Add("gottagofast.gif");
+                output.Add("The bleachers are rattling, but I only have a semi");
+                output.Add("suddenly, she dons her robe and wizard's hat");
+                output.Add("andwehaveliftoff.mp3");
+                output.Add("we fuck for three classes");
+                output.Add("everything_went_better_than_expected.jpg");
+
+                output.Add(GameManager.DumpLines);
+                GameManager.Instance.UnlockMedal(output, "be bloodninja", MedalTypes.BeBloodNinja);
+                output.Add("(be me to play again)");
+                GameManager.Instance.ResetGame();
+            }
+            else if (input.Contains("both"))
+            {
+                output.Add("\"wynautboth?\" - shoulder devil");
+                output.Add("\"don't be greedy, shithole\" - shoulder angel");
+            }
+        }
     }
 
     private void HandleCheetos(List<string> output, string input)
@@ -82,30 +159,28 @@ public class SchoolLocation : DestroyableSingleton<SchoolLocation>
             }
             else
             {
-                output.Add("Bag still half full of cheetos");
+                output.Add("Bag still half full of cheetos, I want more");
             }
         }
         else if (input.Equals("eat chips"))
         {
             output.Add("Crunch, crunch");
             output.Add("Cute girl looks over, \"That's annoying, could you stop?\"");
-            if (this.pencilState == PencilState.Diamonds)
-            {
-                output.Add("Instantly cum from girl talking to me for a second time today");
-                output.Add("Suddenly nurse busts in and bangs the ceremonial penis inspection day gong");
-                output.Add("I try to hide my cheetos, but the crinkling makes me a target");
-                output.Add("I try to run, but the nurse grabs me and suplexes me");
-                output.Add("Cheetos shit gushes from my anus and fills my pants upon impact");
-                output.Add("She unzips my pants to find cheeto cum shit balls");
-                output.Add("I then vomit flaming hot cheetos which ignite upon touching the air");
-                output.Add("but I rolled a critical miss, so the flames back up and I explode");
-                output.Add("fucking penis inpection day");
-                output.Add(GameManager.DumpLines);
-                GameManager.Instance.UnlockMedal(output, "be inspected", MedalTypes.BeInspected);
-                output.Add("(be me to play again)");
-                GameManager.Instance.ResetGame();
-                return;
-            }
+            output.Add("Instantly cum from girl talking to me for a second time today");
+            output.Add("Suddenly nurse busts in and bangs the ceremonial penis inspection day gong");
+            output.Add("I try to hide my cheetos, but the crinkling makes me a target");
+            output.Add("I try to run, but the nurse grabs me and suplexes me");
+            output.Add("Shit gushes from my anus and fills my pants upon impact");
+            output.Add("She unzips my pants to find cheeto cum shit balls");
+            output.Add("I vomit flaming hot cheetos which ignite upon touching the air");
+            output.Add("burninator.gif");
+            output.Add("but I roll a critical miss, so the flames back up and I explode");
+            output.Add("fucking penis inpection day");
+            output.Add(GameManager.DumpLines);
+            GameManager.Instance.UnlockMedal(output, "be inspected", MedalTypes.BeInspected);
+            output.Add("(be me to play again)");
+            GameManager.Instance.ResetGame();
+            return;
         }
         else if (input.Equals("fuck chips"))
         {
